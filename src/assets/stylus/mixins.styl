@@ -1,0 +1,71 @@
+elevation(num = 4s) {
+	if (num == 1) {
+		box-shadow: inset 0 7px 9px -7px rgba(0, 0, 0, .7)
+	}
+
+	if (num == 2) {
+		box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24)
+	}
+
+	// small shadow, good for buttons
+	if (num == 3) {
+		box-shadow: 0 4px 6px rgba(69, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08)
+	}
+
+	// medium shadow, good for cards
+	if (num == 4) {
+		box-shadow: 0 15px 35px rgba(69, 50, 93, .1), 0 5px 15px rgba(0, 0, 0, .07)
+	}
+
+	if (num == 5) {
+		box-shadow: 0 14px 28px rgba(0, 0, 0, .25), 0 10px 10px rgba(0, 0, 0, .22)
+	}
+
+	if (num == 6) {
+		box-shadow: 0 19px 38px rgba(0, 0, 0, .3), 0 15px 12px rgba(0, 0, 0, .22)
+	}
+}
+
+easeOutQuart(property, seconds = .2) {
+	transition: property unit(seconds, 's') cubic-bezier(.165, .84, .44, 1)
+}
+
+easeInQuart(property, seconds = .2) {
+	transition: property unit(seconds, 's') cubic-bezier(.895, .03, .685, .22)
+}
+
+easeInCubic(property, seconds = .2) {
+	transition: property unit(seconds, 's') cubic-bezier(.55, .055, .675, .19)
+}
+
+easeOutCubic(property, seconds = .2) {
+	transition: property unit(seconds, 's') cubic-bezier(.215, .61, .355, 1)
+}
+
+mobile() {
+	@media (max-width: 500px) {
+		{block}
+	}
+}
+
+tablet-port() {
+	@media (max-width: 750px) {
+		{block}
+	}
+}
+
+tablet-land() {
+	@media (max-width: 900px) {
+		{block}
+	}
+}
+
+desktop() {
+	@media (max-width: 1200px) {
+		{block}
+	}
+}
+
+purple-grad() {
+	background: linear-gradient(270deg, #553594 0, #612694 100%)
+}
