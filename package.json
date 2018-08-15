@@ -1,16 +1,44 @@
 {
-  "name": "brianna-blog",
+  "name": "wendte-blog",
+  "description": "Built with React, headless WordPress, and Express",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "proxy": {
+    "/api": {
+      "target": "http://localhost:3333/",
+      "secure": false
+    }
+  },
   "dependencies": {
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2",
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "nodemailer": "^4.6.7",
+    "prop-types": "^15.6.2",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-helmet": "^5.2.0",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build-css": "stylus src/assets/stylus/index.styl -o src",
+    "css": "npm run build-css && stylus -w src/assets/stylus/index.styl -o src",
+    "build-js": "react-scripts build",
+    "server": "nodemon server/server.js --watch",
+    "start-js": "react-scripts start",
+    "start": "concurrently \"npm:server\" \"npm:css\" \"npm:start-js\" ",
+    "build": "npm run build-css && npm run build-js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "concurrently": "^3.6.1",
+    "eslint-config-airbnb": "^16",
+    "eslint-plugin-graphql": "^2.1.1",
+    "stylus": "^0.54.5"
   }
 }
