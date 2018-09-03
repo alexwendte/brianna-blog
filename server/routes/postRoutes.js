@@ -32,7 +32,7 @@ module.exports = app => {
 
     axios
       // !Change this to the production route when I get it
-      .post('http://ksurobotics.esy.es/graphql', {
+      .post(`${process.env.REACT_APP_WORDPRESS_API}/graphql`, {
         query: `${LATEST_MODIFIED}`,
         variables: '',
       })
