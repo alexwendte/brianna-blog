@@ -8,7 +8,7 @@ const Cloudinary = ({ fluid, fixed, source, modifiers, alt, className, keepMeta,
     if (keepMeta) {
       optimParams = 'q_80,fl_keep_iptc';
     } else optimParams = 'f_auto,q_auto';
-    return `http://res.cloudinary.com/wendte-digital-designs/image/upload/${transformations},${optimParams}/remote-media/${parsedRemoteUrl}`;
+    return `https://res.cloudinary.com/wendte-digital-designs/image/upload/${transformations},${optimParams}/remote-media/${parsedRemoteUrl}`;
   }
 
   function getFixedTag() {
