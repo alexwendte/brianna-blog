@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import EXIF from 'exif-js';
+// import EXIF from 'exif-js';
 import styled from 'styled-components';
+import { Link } from '@reach/router';
+import PropTypes from 'prop-types';
 
 import Cloudinary from 'components/Cloudinary';
+import { transition, media, elevation } from 'utils/mixins';
+import colors from 'utils/colors';
 
 class PhotoGallery extends Component {
-  state = {
-    metaPictures: [],
-  };
-
   months = {
     January: 0,
     February: 1,
@@ -24,85 +24,74 @@ class PhotoGallery extends Component {
     December: 11,
   };
 
-  getExif() {
-    const images = Array.from(document.querySelectorAll('.picture'));
-    images.map(img => {
-      EXIF.getData(img, function() {
-        // console.dir(this);
-        const allMetaData = EXIF.getAllTags(this);
-        const myData = {
-          date: allMetaData.DateTime,
-          camera: allMetaData.Model,
-          latitude: allMetaData.GPSLatitude,
-          longitude: allMetaData.GPSLongitude,
-          bearing: allMetaData.GPSDestBearing,
-          altitude: allMetaData.GPSAltitude,
-          alt: this.alt,
-          src: this.currentSrc,
-        };
-        if (myData.latitude) {
-          const modifiedData = {
-            ...myData,
-            latitude: myData.latitude[0] + myData.latitude[1] / 60 + myData.latitude[2] / 3600,
-            longitude: myData.longitude[0] + myData.longitude[1] / 60 + myData.longitude[2] / 3600,
-          };
-        }
-        console.log(myData);
-        // console.log(this);
-        // console.log(myData);
-      });
-    });
-  }
-
-  handleClick = () => {
-    this.getExif();
-  };
-
   render() {
     const { pictures, month } = this.props;
     const competitionsHero = { maxWidth: 0.2, height: 300 };
-    //! Need to get meta data.
-    // Figure out how I should get each images data from exif
 
     return (
       <Gallery>
         <h2 className="heading">{month} Photos</h2>
         {pictures &&
           pictures.reduce((filtered, pic) => {
-            if (pic.date.month === this.months[month])
+            if (pic.date.month === this.months[month]) {
               filtered.push(
-                <Cloudinary
-                  className="picture"
-                  modifiers={competitionsHero}
-                  fluid
-                  keepMeta
-                  source={pic.src}
-                  alt={pic.alt}
-                  key={pic.src}
-                />
+                <Link to={pic.photoIndex.toString()} key={pic.src} className="picture-link">
+                  <Cloudinary
+                    className="picture"
+                    modifiers={competitionsHero}
+                    fluid
+                    keepMeta
+                    source={pic.src}
+                    alt={pic.alt}
+                  />
+                </Link>
               );
+            }
             return filtered;
           }, [])}
-        <button onClick={this.handleClick} />
       </Gallery>
     );
   }
 }
 export default PhotoGallery;
 
+PhotoGallery.propTypes = {
+  pictures: PropTypes.array.isRequired,
+  month: PropTypes.string.isRequired,
+};
+
 const Gallery = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 90%;
+  margin: 0 auto;
   .heading {
     padding-top: 2rem;
     text-align: center;
-    color: #66b9bf;
+    color: ${colors.seaGreen};
     width: 100%;
   }
-  .picture {
+
+  .picture-link {
     margin: 2rem;
-    border-radius: 5px;
-    box-shadow: 0 15px 35px rgba(69, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
   }
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+
+  .picture {
+    border-radius: 20px;
+    ${elevation({ level: 4 })};
+    ${transition({ name: 'easeOutCubic', prop: 'all', time: 0.3 })};
+    display: block;
+    text-align: center;
+    width: 30rem;
+    h3 {
+      color: purple;
+      font-size: 2rem;
+      padding-bottom: 2rem;
+      padding-top: 0.5rem;
+    }
+    &:hover {
+      transform: rotate(1deg) translateX(-10px) translateY(-10px);
+      ${transition({ name: 'easeInCubic', prop: 'all', time: 0.2 })};
+    }
+  }
 `;

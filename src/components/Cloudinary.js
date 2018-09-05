@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Cloudinary = ({ fluid, fixed, source, modifiers, alt, className, keepMeta }) => {
+const Cloudinary = ({ fluid, fixed, source, modifiers, alt, className, keepMeta, onLoad, onError }) => {
   function getTransformationUrl({ transformations, remoteUrl }) {
     const parsedRemoteUrl = remoteUrl.split('wp-content/uploads/').pop();
     let optimParams;
@@ -24,7 +24,7 @@ const Cloudinary = ({ fluid, fixed, source, modifiers, alt, className, keepMeta 
     );
     const getSrcSet = () => `${urls[0]}, ${urls[1]} 2x`;
 
-    return <img className={className} src={urls[0]} alt={alt} srcSet={getSrcSet()} />;
+    return <img className={className} src={urls[0]} alt={alt} srcSet={getSrcSet()} onLoad={onLoad} onError={onError} />;
   }
 
   function getFluidTag() {
@@ -33,22 +33,32 @@ const Cloudinary = ({ fluid, fixed, source, modifiers, alt, className, keepMeta 
     // want breakPoints to be predictable the correct width
     const scaled = breakPoints.map(point => Math.floor(point * modifiers.maxWidth));
     const fluidUrls = scaled.map(point => {
-      if (keepMeta)
+      if (keepMeta) {
         return getTransformationUrl({
           transformations: `w_${point},h_${modifiers.height}`,
           remoteUrl: source,
         });
-      else
-        return getTransformationUrl({
-          transformations: `w_${point},h_${modifiers.height},c_fill`,
-          remoteUrl: source,
-        });
+      }
+      return getTransformationUrl({
+        transformations: `w_${point},h_${modifiers.height},c_fill`,
+        remoteUrl: source,
+      });
     });
 
     const getSizes = () => `(max-width: ${scaled[0]}px) 100vw, ${scaled[0]}px`;
     const getSourceSet = () => fluidUrls.map((url, i) => `${url} ${scaled[i]}w, `).join('');
 
-    return <img src={fluidUrls[0]} className={className} alt={alt} sizes={getSizes()} srcSet={getSourceSet()} />;
+    return (
+      <img
+        src={fluidUrls[0]}
+        className={className}
+        alt={alt}
+        sizes={getSizes()}
+        srcSet={getSourceSet()}
+        onLoad={onLoad}
+        onError={onError}
+      />
+    );
   }
   if (fluid) return getFluidTag();
   else if (fixed) return getFixedTag();
@@ -63,6 +73,9 @@ Cloudinary.propTypes = {
   modifiers: PropTypes.object,
   alt: PropTypes.string,
   className: PropTypes.string,
+  keepMeta: PropTypes.bool,
+  onLoad: PropTypes.func,
+  onError: PropTypes.func,
 };
 
 Cloudinary.defaultProps = {
@@ -71,4 +84,7 @@ Cloudinary.defaultProps = {
   modifiers: {},
   alt: '',
   className: '',
+  keepMeta: false,
+  onLoad: null,
+  onError: null,
 };

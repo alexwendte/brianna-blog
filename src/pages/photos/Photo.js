@@ -1,35 +1,136 @@
 import React, { Component } from 'react';
+import EXIF from 'exif-js';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 import { AppContext } from 'modules/AppContext';
 import Cloudinary from 'components/Cloudinary';
+import Icon from 'components/Icon';
+import { prettifyDate } from 'utils/date';
+import colors from 'utils/colors';
 
 // This is a page for a specific photo.
 class Photo extends Component {
-  componentDidUpdate() {
-    console.log('Updated');
+  state = {
+    pictureInfo: null,
+    loading: true,
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.loading === true && this.state.loading === false) {
+      this.getExif();
+    }
   }
 
+  getExif = () => {
+    const img = document.querySelector('.picture');
+    if (img) {
+      EXIF.getData(img, () => {
+        const allMetaData = EXIF.getAllTags(img);
+        const myData = {
+          date: allMetaData.DateTime,
+          camera: allMetaData.Model,
+          latitude: allMetaData.GPSLatitude,
+          longitude: allMetaData.GPSLongitude,
+          bearing: allMetaData.GPSDestBearing,
+          altitude: allMetaData.GPSAltitude,
+          alt: img.alt,
+          src: img.currentSrc,
+        };
+        let returnData;
+        if (myData.latitude) {
+          returnData = {
+            ...myData,
+            latitude: myData.latitude[0] + myData.latitude[1] / 60 + myData.latitude[2] / 3600,
+            longitude: myData.longitude[0] + myData.longitude[1] / 60 + myData.longitude[2] / 3600,
+          };
+        } else returnData = { ...myData, latitude: null, longitude: null };
+        img.dataset.imageData = JSON.stringify(returnData);
+      });
+      // Gives EXIF time to put data onto image
+      const interval = setInterval(() => {
+        if (img.dataset.imageData) {
+          this.setState({ pictureInfo: JSON.parse(img.dataset.imageData) });
+          clearInterval(interval);
+        }
+      }, 100);
+    }
+  };
+
+  handleImageChange = () => {
+    this.setState({ loading: false });
+  };
+
   render() {
-    const competitionsHero = { maxWidth: 0.2, height: 300 };
+    const competitionsHero = { maxWidth: 0.4, height: 400 };
     const { photoIndex } = this.props;
+    const { pictureInfo } = this.state;
+
+    function handleBackClick() {
+      window.history.back();
+    }
+
     return (
       <AppContext.Consumer>
         {({ state }) => {
           if (state.pictures) {
             const pic = state.pictures[photoIndex];
-            if (pic)
+            if (pic) {
               return (
-                <Cloudinary
-                  className="picture"
-                  modifiers={competitionsHero}
-                  fluid
-                  keepMeta
-                  source={pic.src}
-                  alt={pic.alt}
-                  key={pic.src}
-                />
+                <div className="page">
+                  <BackButton className="back" onClick={handleBackClick}>
+                    <Icon className="icon" name="back" color="#CF6776" />
+                    <span className="text">Back</span>
+                  </BackButton>
+                  <PictureInfo className="picture-info">
+                    <h3>Location</h3>
+                    <p>{prettifyDate({ date: pic.date.fullDate })}</p>
+                  </PictureInfo>
+                  <PhotoWrapper>
+                    <div className="picture-element">
+                      <Cloudinary
+                        className="picture"
+                        modifiers={competitionsHero}
+                        fluid
+                        keepMeta
+                        source={pic.src}
+                        alt={pic.alt}
+                        key={pic.src}
+                        onLoad={this.handleImageChange}
+                        onError={this.handleImageChange}
+                      />
+                    </div>
+                    {pictureInfo &&
+                      (pictureInfo.latitude ? (
+                        /* 
+                            <iframe
+                              className="map"
+                              title="Street View"
+                              width="600"
+                              height="400"
+                              frameBorder="0"
+                              scrolling="no"
+                              marginHeight="0"
+                              marginWidth="0"
+                              src={`https://www.google.com/maps/embed/v1/streetview?key=AIzaSyADYv2uIYX0FWPykJn_xMzFWodm-33bTIE&location=${
+                                pictureInfo.latitude
+                              },${pictureInfo.longitude}&fov=75`}
+                              id="embed"
+                              allowFullScreen=""
+                              kwframeid="1"
+                            />
+                             */
+                        <div className="map" />
+                      ) : (
+                        <div className="map">
+                          <h3>No location details available</h3>
+                        </div>
+                      ))}
+                  </PhotoWrapper>
+                </div>
               );
-            else return <h1>Photo not found</h1>;
+            }
+            return <h1>Photo not found</h1>;
             /* 
           const latlng = { lat: modifiedData.latitude, lng: modifiedData.longitude };
           
@@ -51,4 +152,77 @@ class Photo extends Component {
     );
   }
 }
+
 export default Photo;
+
+Photo.propTypes = {
+  photoIndex: PropTypes.string,
+};
+
+Photo.defaultProps = {
+  photoIndex: '',
+};
+
+const PhotoWrapper = styled.div`
+  padding: 0 3rem 3rem;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  .map {
+    width: 600px;
+    height: 400px;
+    background: ${colors.lightGray};
+    margin-left: 2rem;
+  }
+  .extra-info {
+    padding-left: 3rem;
+  }
+  @media (max-width: 1350px) {
+    .picture {
+      width: 800px;
+      height: 600px;
+      max-width: 100%;
+      margin: 0 auto;
+      display: block;
+    }
+    .map {
+      width: 800px;
+      height: 533px;
+      margin-left: 0rem;
+      margin-top: 3rem;
+    }
+  }
+`;
+
+const BackButton = styled.button`
+  align-items: center;
+  background: none;
+  border: none;
+  border-radius: 5px;
+  display: flex;
+  margin-left: 3rem;
+  margin-top: 2rem;
+  transition: transform 0.2s ease-in;
+  svg {
+    height: 3.2rem;
+    width: 3.2rem;
+  }
+  .text {
+    color: #cf6776;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-left: 1rem;
+  }
+  &:hover {
+    cursor: pointer;
+    transform: translateY(-2px);
+  }
+`;
+
+const PictureInfo = styled.div`
+  max-width: 1200px;
+  padding: 0 3rem 3rem;
+  margin: 0 auto;
+`;

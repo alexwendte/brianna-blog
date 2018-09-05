@@ -1,28 +1,35 @@
-import React, { Component } from 'react';
+import React, { Fragment } from 'react';
 import { Router } from '@reach/router';
 
 import { AppProvider } from 'modules/AppContext';
 import Home from 'pages/Home';
 import AboutUs from 'pages/AboutUs';
-import Posts from 'pages/Posts';
+import Posts from 'pages/posts/Posts';
+import Post from 'pages/posts/Post';
 import Photos from 'pages/photos/Photos';
 import Photo from 'pages/photos/Photo';
-import './App.css';
+import Header from './Header';
+import Footer from './Footer';
 
-class App extends Component {
-  render() {
-    return (
-      <AppProvider>
-        <Router>
-          <Home path="/" />
-          <AboutUs path="about-us" />
-          <Photos path="photos" />
-          <Photo path="photos/:photoIndex" />
-          <Posts path="posts" />
-        </Router>
-      </AppProvider>
-    );
-  }
-}
+const App = () => (
+  <Fragment>
+    <Router>
+      <Header path="/*" />
+    </Router>
+    <AppProvider>
+      <Router primary={false}>
+        <Home path="/" />
+        <AboutUs path="about-us" />
+        <Photos path="photos" />
+        <Photo path="photos/:photoIndex" />
+        <Posts path="posts" />
+        <Post path="posts/:postSlug" />
+      </Router>
+    </AppProvider>
+    <Router primary={false}>
+      <Footer path="/*" />
+    </Router>
+  </Fragment>
+);
 
 export default App;
