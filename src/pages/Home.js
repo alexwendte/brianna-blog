@@ -18,7 +18,6 @@ const Home = () => (
     <AppContext.Consumer>
       {({ state }) => {
         if (state.posts) {
-          console.log(state.posts[0].id);
           const competitionsHero = { maxWidth: 0.8, height: 550 };
           return (
             <div className="hello">

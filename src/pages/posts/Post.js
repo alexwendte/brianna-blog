@@ -34,6 +34,7 @@ class Post extends Component {
                   </BackButton>
                   <PostWrapper>
                     <div className="picture-element">
+                      <h1>{post.title}</h1>
                       <Cloudinary
                         className="picture"
                         modifiers={competitionsHero}

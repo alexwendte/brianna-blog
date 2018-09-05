@@ -4,19 +4,11 @@ import axios from 'axios';
 import { map, orderBy } from 'lodash';
 
 import { decodeHtml } from 'utils/string';
+import { convertToDateObject } from 'utils/date';
 
 const AppContext = React.createContext();
 
 class AppProvider extends Component {
-  static convertToDateObject({ raw }) {
-    if (raw === '0') {
-      return { fullDate: null, month: 12 }; // The picture's date is not defined
-    }
-    const fullDate = new Date(raw * 1000);
-    const month = fullDate.getMonth();
-    return { fullDate, month };
-  }
-
   state = {
     // aboutInfo: null,
     pictures: null,
@@ -60,7 +52,7 @@ class AppProvider extends Component {
           return {
             id: post.id,
             category,
-            date: post.date,
+            date: convertToDateObject({ semiFormatted: post.date }),
             title: decodeHtml(post.title.rendered),
             excerpt: decodeHtml(post.excerpt.rendered),
             slug: post.slug,
@@ -72,7 +64,7 @@ class AppProvider extends Component {
             },
           };
         });
-        const orderedPosts = orderBy(massagedPosts, ['date'], ['desc']);
+        const orderedPosts = orderBy(massagedPosts, ['date.fullDate'], ['desc']);
 
         this.setState({ posts: orderedPosts });
       })
@@ -85,7 +77,7 @@ class AppProvider extends Component {
         const pictures = [...res.data];
         const formattedPictures = pictures.map((pic, index) => {
           const rawTime = pic.media_details.image_meta.created_timestamp;
-          const date = AppProvider.convertToDateObject({ raw: rawTime });
+          const date = convertToDateObject({ raw: rawTime });
           const returnObj = { src: pic.source_url, alt: pic.alt_text, date, photoIndex: index };
           return returnObj;
         });

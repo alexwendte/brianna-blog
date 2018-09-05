@@ -35,12 +35,12 @@ const Cloudinary = ({ fluid, fixed, source, modifiers, alt, className, keepMeta,
     const fluidUrls = scaled.map(point => {
       if (keepMeta) {
         return getTransformationUrl({
-          transformations: `w_${point},h_${modifiers.height}`,
+          transformations: `w_${point}${modifiers.height ? `,h_${modifiers.height}` : ''}`,
           remoteUrl: source,
         });
       }
       return getTransformationUrl({
-        transformations: `w_${point},h_${modifiers.height},c_fill`,
+        transformations: `w_${point}${modifiers.height ? `,h_${modifiers.height}` : ''},c_fill`,
         remoteUrl: source,
       });
     });

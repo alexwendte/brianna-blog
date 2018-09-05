@@ -8,7 +8,7 @@ import Cloudinary from 'components/Cloudinary';
 import { transition, media, elevation } from 'utils/mixins';
 import colors from 'utils/colors';
 
-class PhotoGallery extends Component {
+class MonthPosts extends Component {
   months = {
     January: 0,
     February: 1,
@@ -25,51 +25,48 @@ class PhotoGallery extends Component {
   };
 
   render() {
-    const { pictures, month } = this.props;
-    // const competitionsHero = { maxWidth: 0.2, height: 300 };
-    const competitionsHero = { maxWidth: 0.2 };
+    const { posts, month } = this.props;
+    const competitionsHero = { maxWidth: 0.2, height: 300 };
 
     return (
-      <Gallery>
-        <h2 className="heading">{month} Photos</h2>
-        {pictures &&
-          pictures.reduce((filtered, pic) => {
-            if (pic.date.month === this.months[month]) {
+      <Block>
+        <h2 className="heading">Posts from {month} </h2>
+        {posts &&
+          posts.reduce((filtered, post) => {
+            if (post.date.month === this.months[month]) {
+              const pic = post.featuredImage;
               filtered.push(
-                <Link to={pic.photoIndex.toString()} key={pic.src} className="picture-link">
-                  <Picture>
-                    <Cloudinary
-                      className="picture"
-                      modifiers={competitionsHero}
-                      fluid
-                      keepMeta
-                      source={pic.src}
-                      alt={pic.alt}
-                    />
-                  </Picture>
+                <Link to={post.slug} key={post.slug} className="picture-link">
+                  <h4>{post.title}</h4>
+                  <Cloudinary
+                    className="picture"
+                    modifiers={competitionsHero}
+                    fluid
+                    keepMeta
+                    source={pic.src}
+                    alt={pic.alt}
+                  />
+                  <p>{post.excerpt}</p>
                 </Link>
               );
             }
             return filtered;
           }, [])}
-      </Gallery>
+      </Block>
     );
   }
 }
-export default PhotoGallery;
+export default MonthPosts;
 
-PhotoGallery.propTypes = {
-  pictures: PropTypes.array.isRequired,
+MonthPosts.propTypes = {
+  posts: PropTypes.array.isRequired,
   month: PropTypes.string.isRequired,
 };
 
-const Gallery = styled.section`
+const Block = styled.section`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  /* display: grid;
-  grid-template-rows: auto repeat(450px);
-  grid-template-columns: repeat(300px); */
+  max-width: 90%;
   margin: 0 auto;
   .heading {
     padding-top: 2rem;
@@ -81,9 +78,7 @@ const Gallery = styled.section`
   .picture-link {
     margin: 2rem;
   }
-`;
 
-const Picture = styled.div`
   .picture {
     border-radius: 20px;
     ${elevation({ level: 4 })};

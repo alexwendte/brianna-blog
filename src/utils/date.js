@@ -39,3 +39,12 @@ export function prettifyDate({ date }) {
   const final = `${month} ${day}, ${year} at ${time}`;
   return final;
 }
+
+export function convertToDateObject({ raw, semiFormatted }) {
+  if (raw === '0') {
+    return { fullDate: null, month: 12 }; // The picture's date is not defined
+  }
+  const fullDate = new Date(raw ? raw * 1000 : semiFormatted);
+  const month = fullDate.getMonth();
+  return { fullDate, month };
+}
