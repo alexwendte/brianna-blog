@@ -96,30 +96,28 @@ class Photo extends Component {
                         source={pic.src}
                         alt={pic.alt}
                         key={pic.src}
-                        onLoad={this.handleImageChange}
-                        onError={this.handleImageChange}
+                        handleImageChange={this.handleImageChange}
                       />
                     </div>
                     {pictureInfo &&
                       (pictureInfo.latitude ? (
-                        /* 
-                            <iframe
-                              className="map"
-                              title="Street View"
-                              width="600"
-                              height="400"
-                              frameBorder="0"
-                              scrolling="no"
-                              marginHeight="0"
-                              marginWidth="0"
-                              src={`https://www.google.com/maps/embed/v1/streetview?key=AIzaSyADYv2uIYX0FWPykJn_xMzFWodm-33bTIE&location=${
-                                pictureInfo.latitude
-                              },${pictureInfo.longitude}&fov=75`}
-                              id="embed"
-                              allowFullScreen=""
-                              kwframeid="1"
-                            />
-                             */
+                        /*
+                        <iframe
+                          className="map"
+                          title="Street View"
+                          width="600"
+                          height="400"
+                          frameBorder="0"
+                          scrolling="no"
+                          marginHeight="0"
+                          marginWidth="0"
+                          src={`https://www.google.com/maps/embed/v1/streetview?key=AIzaSyADYv2uIYX0FWPykJn_xMzFWodm-33bTIE&location=${
+                            pictureInfo.latitude
+                          },${pictureInfo.longitude}&fov=75`}
+                          id="embed"
+                          allowFullScreen=""
+                          kwframeid="1"
+                        /> */
                         <div className="map" />
                       ) : (
                         <div className="map">

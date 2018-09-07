@@ -43,8 +43,7 @@ class Post extends Component {
                         source={pic.src}
                         alt={pic.alt}
                         key={pic.src}
-                        onLoad={this.handleImageChange}
-                        onError={this.handleImageChange}
+                        handleImageChange={this.handleImageChange}
                       />
                       <div className="content" dangerouslySetInnerHTML={{ __html: insane(post.content) }} />
                     </div>

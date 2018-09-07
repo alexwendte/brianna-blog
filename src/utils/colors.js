@@ -5,5 +5,6 @@ export const colors = {
   lightGray: '#EDEFF2',
   darkGray: '#393f4d',
   seaGreen: '#66B9Bf',
+  electricBlue: '#33ccff',
 };
 export default colors;

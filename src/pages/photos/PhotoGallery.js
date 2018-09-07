@@ -24,10 +24,22 @@ class PhotoGallery extends Component {
     December: 11,
   };
 
+  handleImageChange = e => {
+    const { naturalHeight: height, naturalWidth: width } = e.target;
+    const link = e.target.closest('a');
+
+    const vert = height > width ? 3 : 2;
+    const hor = width > height ? 3 : 2;
+    link.style.gridColumn = `span ${hor}`;
+    link.style.gridRow = `span ${vert}`;
+
+    // Add classes here.
+  };
+
   render() {
     const { pictures, month } = this.props;
     // const competitionsHero = { maxWidth: 0.2, height: 300 };
-    const competitionsHero = { maxWidth: 0.2 };
+    const gridPicture = { maxWidth: 0.2 };
 
     return (
       <Gallery>
@@ -40,11 +52,13 @@ class PhotoGallery extends Component {
                   <Picture>
                     <Cloudinary
                       className="picture"
-                      modifiers={competitionsHero}
+                      modifiers={gridPicture}
                       fluid
                       keepMeta
                       source={pic.src}
                       alt={pic.alt}
+                      gridClasses
+                      handleImageChange={this.handleImageChange}
                     />
                   </Picture>
                 </Link>
@@ -64,33 +78,44 @@ PhotoGallery.propTypes = {
 };
 
 const Gallery = styled.section`
-  display: flex;
+  /* display: flex;
   flex-wrap: wrap;
+  justify-content: center; */
+  /* I want the horizontal pictres to be twice the widht, and the vertical pictures to be twice the height. I need to tell Cloudinary this.*/
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 110px);
+  grid-template-rows: auto;
+  grid-auto-rows: 110px;
+  grid-auto-flow: dense;
   justify-content: center;
-  /* display: grid;
-  grid-template-rows: auto repeat(450px);
-  grid-template-columns: repeat(300px); */
-  margin: 0 auto;
+  /*grid-gap: 2rem;*/
+  padding: 3rem 2rem;
+  overflow: hidden;
   .heading {
     padding-top: 2rem;
     text-align: center;
     color: ${colors.seaGreen};
     width: 100%;
+    grid-column: 1 / -1;
   }
-
   .picture-link {
-    margin: 2rem;
+    overflow: hidden;
+    padding: 1rem;
   }
 `;
 
 const Picture = styled.div`
+  height: 100%;
   .picture {
     border-radius: 20px;
     ${elevation({ level: 4 })};
     ${transition({ name: 'easeOutCubic', prop: 'all', time: 0.3 })};
     display: block;
     text-align: center;
-    width: 30rem;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
     h3 {
       color: purple;
       font-size: 2rem;
