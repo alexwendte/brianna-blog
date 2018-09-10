@@ -2,6 +2,7 @@
 const dotenv = require('dotenv');
 
 const express = require('express');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 
@@ -15,6 +16,8 @@ dotenv.load();
 
 // initialize the application and create the routes
 const app = express();
+
+app.use(helmet());
 
 // allow cors so my site can communicate with my back-end.
 app.use(cors());

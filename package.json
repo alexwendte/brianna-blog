@@ -17,6 +17,7 @@
     "dotenv": "^6.0.0",
     "exif-js": "^2.3.0",
     "express": "^4.16.3",
+    "helmet": "^3.13.0",
     "insane": "^2.6.2",
     "nodemailer": "^4.6.7",
     "prop-types": "^15.6.2",
