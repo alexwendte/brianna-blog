@@ -22,8 +22,8 @@ const App = () => (
         <Home path="/" />
         <AboutUs path="about-us" />
         <Photos path="photos" />
-        <Photo path="photos/:photoIndex" />
-        <PhotoGallery path="photos/posts/:postId" />
+        <PhotoGallery path="photos/:postSlug" />
+        <Photo path="photos/:postSlug/:photoIndex" />
         <Posts path="posts" />
         <Post path="posts/:postSlug" />
       </Router>

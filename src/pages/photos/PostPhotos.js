@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-// import EXIF from 'exif-js';
 import styled from 'styled-components';
 import { Link } from '@reach/router';
 import PropTypes from 'prop-types';
@@ -8,7 +7,7 @@ import Fixed from 'components/cloudinary/Fixed';
 import Spinner from 'components/Spinner';
 import { transition, elevation } from 'utils/mixins';
 import colors from 'utils/colors';
-import { monthsToInt, monthAndDay } from 'utils/date';
+import { monthsToInt } from 'utils/date';
 
 function filterByMonth({ arr, month }) {
   return arr.filter(obj => obj.date.month === monthsToInt[month]);
@@ -17,7 +16,6 @@ function filterByMonth({ arr, month }) {
 class PhotoGallery extends Component {
   state = {
     filteredPosts: filterByMonth({ arr: this.props.posts, month: this.props.month }),
-    filteredPics: filterByMonth({ arr: this.props.pics, month: this.props.month }),
     postsAreLoaded: false,
   };
 
@@ -43,11 +41,13 @@ class PhotoGallery extends Component {
   } */
 
   render() {
-    const { month } = this.props;
-    const { filteredPosts, postsAreLoaded, filteredPics } = this.state;
+    const { month, pics } = this.props;
+    const { filteredPosts, postsAreLoaded } = this.state;
     const postPicture = { width: 250, height: 200 };
+    // I can get Posts by id doing media?parent=postId
 
-    const getCountById = ({ pics, id }) => pics.filter(pic => pic.post === id).length;
+    const getCountById = ({ arrPics, id }) => arrPics.filter(pic => pic.post === id).length;
+
     return (
       <Gallery>
         <Spinner loading={!postsAreLoaded}>
@@ -56,9 +56,9 @@ class PhotoGallery extends Component {
               <h2 className="heading__gallery">{month} Posts</h2>
               {filteredPosts.map(post => {
                 const pic = post.featuredImage;
-                const numPics = getCountById({ pics: filteredPics, id: post.id });
+                const numPics = getCountById({ arrPics: pics, id: post.id });
                 return (
-                  <PictureLink to={`posts/${post.id.toString()}`} key={pic.src}>
+                  <PictureLink to={post.slug} key={pic.src}>
                     <h4 className="heading__post">{post.title}</h4>
                     <Fixed
                       className="picture"
@@ -70,7 +70,8 @@ class PhotoGallery extends Component {
                       gridClasses
                       handleImageChange={this.handleImageChange}
                     />
-                    <p className="pictureCount">{`${numPics} in this Gallery`}</p>
+                    {/* This number is Wrong */}
+                    <p className="pictureCount">{`${numPics} Photos`}</p>
                   </PictureLink>
                 );
               })}
@@ -95,7 +96,7 @@ const Gallery = styled.section`
   flex-wrap: wrap;
   padding: 3rem 2rem;
   .heading__gallery {
-    padding: 2rem;
+    padding-bottom: 2rem;
     text-align: center;
     color: ${colors.seaGreen};
     width: 100%;
@@ -108,7 +109,7 @@ const PictureLink = styled(Link)`
   justify-content: center;
   flex-direction: column;
   text-align: center;
-  padding: 2rem;
+  padding: 1.5rem;
   margin: 0 2rem;
   border-radius: 5px;
   ${elevation({ level: 4 })};
@@ -126,6 +127,9 @@ const PictureLink = styled(Link)`
   }
   .pictureCount {
     padding-top: 1.5rem;
+    font-size: 1.8rem;
+    color: #a2a2a2;
+    font-weight: 600;
   }
   &:hover {
     transform: rotate(1deg) translateX(-10px) translateY(-10px);

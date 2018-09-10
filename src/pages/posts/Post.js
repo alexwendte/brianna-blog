@@ -11,6 +11,10 @@ import colors from 'utils/colors';
 
 // This is a page for a specific Post.
 class Post extends Component {
+  componentDidMount() {
+    window.scrollTo(0, 0);
+  }
+
   render() {
     const postHeroImage = { maxWidth: 0.4, height: 400 };
     const { postSlug } = this.props;

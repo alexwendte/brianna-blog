@@ -16,6 +16,10 @@ class Photo extends Component {
     loading: true,
   };
 
+  componentDidMount() {
+    window.scrollTo(0, 0);
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (prevState.loading === true && this.state.loading === false) {
       this.getExif();
@@ -100,7 +104,8 @@ class Photo extends Component {
                     </div>
                     {pictureInfo &&
                       (pictureInfo.latitude ? (
-                        /*
+                        // <div className="map" />
+
                         <iframe
                           className="map"
                           title="Street View"
@@ -116,8 +121,7 @@ class Photo extends Component {
                           id="embed"
                           allowFullScreen=""
                           kwframeid="1"
-                        /> */
-                        <div className="map" />
+                        />
                       ) : (
                         <div className="map">
                           <h3>No location details available</h3>

@@ -6,20 +6,23 @@ import PropTypes from 'prop-types';
 import AppContext from 'modules/AppContext';
 import Fluid from 'components/cloudinary/Fluid';
 import Spinner from 'components/Spinner';
-import { transition, elevation } from 'utils/mixins';
+import { transition, elevation, media } from 'utils/mixins';
 import colors from 'utils/colors';
 
 class PhotoGallery extends Component {
   state = {
     picsAreLoaded: false,
-    numberOfPics: undefined,
   };
+
+  componentDidMount() {
+    window.scrollTo(0, 0);
+  }
 
   numPicsLoaded = 0;
 
-  handleImageChange = e => {
+  handleImageChange = (e, numPics) => {
     this.numPicsLoaded += 1;
-    if (this.numPicsLoaded === this.state.numberOfPics) {
+    if (this.numPicsLoaded === numPics) {
       this.setState(() => ({ picsAreLoaded: true }));
     }
 
@@ -32,22 +35,10 @@ class PhotoGallery extends Component {
     link.style.gridRow = `span ${vert}`;
   };
 
-  /* componentDidUpdate(prevProps, prevState) {
-    if (prevState.picsAreLoaded === false && this.state.picsAreLoaded) this.state.loadedFunction();
-  } */
-
-  //! Figure this out. Maybe with CDU??
-  filterPics({ pics, postId }) {
-    const res = pics.filter(pic => pic.post === Number(postId));
-    this.setState(prev => {
-      console.log('Setting State');
-      //! prev.numberOfPics && { numberOfPics: res.length };
-    });
-    return res;
-  }
+  filterPics = ({ pics, postSlug }) => pics.filter(pic => pic.postSlug === postSlug);
 
   render() {
-    const { postId } = this.props;
+    const { postSlug } = this.props;
     const { picsAreLoaded } = this.state;
     const gridPicture = { maxWidth: 0.2 };
 
@@ -55,13 +46,18 @@ class PhotoGallery extends Component {
       <AppContext.Consumer>
         {({ state }) => {
           if (state.pictures) {
-            const filteredPics = this.filterPics({ pics: state.pictures, postId });
+            // Get the post that corresponds with the post id. (Should do this in the AppContext)
+            const filteredPics = this.filterPics({ pics: state.pictures, postSlug });
             return (
               <Gallery>
                 <Spinner loading={!picsAreLoaded}>
                   {() => (
                     <Fragment>
-                      <h2 className="heading__gallery">{postId} Photos</h2>
+                      <h2 className="heading__gallery">
+                        {/* Now I need to get the post title... */}
+                        {/* Write this as a string util and unit test it to practice */}
+                        {filteredPics[0].postTitle} Photos
+                      </h2>
                       {filteredPics.map(pic => (
                         <PictureLink to={pic.photoIndex.toString()} key={pic.src}>
                           <Fluid
@@ -72,7 +68,7 @@ class PhotoGallery extends Component {
                             source={pic.src}
                             alt={pic.alt}
                             gridClasses
-                            handleImageChange={this.handleImageChange}
+                            handleImageChange={ev => this.handleImageChange(ev, filteredPics.length)}
                           />
                         </PictureLink>
                       ))}
@@ -91,8 +87,11 @@ class PhotoGallery extends Component {
 export default PhotoGallery;
 
 PhotoGallery.propTypes = {
-  pictures: PropTypes.array.isRequired,
-  postId: PropTypes.string.isRequired,
+  postSlug: PropTypes.string,
+};
+
+PhotoGallery.defaultProps = {
+  postSlug: undefined,
 };
 
 const Gallery = styled.section`
@@ -105,12 +104,19 @@ const Gallery = styled.section`
   padding: 3rem 2rem;
   overflow: hidden;
   .heading__gallery {
-    padding-top: 2rem;
     text-align: center;
     color: ${colors.seaGreen};
     width: 100%;
     grid-column: 1 / -1;
   }
+
+  ${media.tabletLand`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70%;
+    margin: 0 auto;
+  `};
 `;
 
 const PictureLink = styled(Link)`

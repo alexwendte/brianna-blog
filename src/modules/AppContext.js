@@ -8,9 +8,10 @@ import { convertToDateObject } from 'utils/date';
 
 const AppContext = React.createContext();
 
+/* eslint-disable react/no-unused-state,no-console */
+
 export class AppProvider extends Component {
   state = {
-    // aboutInfo: null,
     pictures: null,
     posts: null,
   };
@@ -66,22 +67,34 @@ export class AppProvider extends Component {
         });
         const orderedPosts = orderBy(massagedPosts, ['date.fullDate'], ['desc']);
 
-        this.setState({ posts: orderedPosts });
-      })
-      .catch(err => {
-        console.error(err);
-      });
-    axios
-      .get(`${process.env.REACT_APP_WORDPRESS_API}/wp-json/wp/v2/media/?per_page=100`)
-      .then(res => {
-        const pictures = [...res.data];
-        const formattedPictures = pictures.map((pic, index) => {
-          const rawTime = pic.media_details.image_meta.created_timestamp;
-          const date = convertToDateObject({ raw: rawTime });
-          const returnObj = { src: pic.source_url, alt: pic.alt_text, date, photoIndex: index, post: pic.post };
-          return returnObj;
+        axios.get(`${process.env.REACT_APP_WORDPRESS_API}/wp-json/wp/v2/media/?per_page=100`).then(res2 => {
+          const pictures = [...res2.data];
+          /* const getPost = ({ link }) => {
+            const end = link.indexOf('/attachment');
+            const shortened = link.substr(0, end);
+            const start = shortened.lastIndexOf('/');
+            const sub = shortened.substr(start + 1, end);
+            return sub;
+          }; */
+
+          const formattedPictures = pictures.map((pic, index) => {
+            const rawTime = pic.media_details.image_meta.created_timestamp;
+            const date = convertToDateObject({ raw: rawTime });
+            const picsPost = orderedPosts.find(post => post.id === pic.post) || {};
+            const returnObj = {
+              src: pic.source_url,
+              alt: pic.alt_text,
+              date,
+              photoIndex: index,
+              post: pic.post,
+              postSlug: picsPost.slug,
+              postTitle: picsPost.title,
+            };
+            return returnObj;
+          });
+
+          this.setState({ pictures: formattedPictures, posts: orderedPosts });
         });
-        this.setState({ pictures: formattedPictures });
       })
       .catch(err => {
         console.error(err);
