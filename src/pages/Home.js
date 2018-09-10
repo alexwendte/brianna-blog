@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { Link } from '@reach/router';
 import { Helmet } from 'react-helmet';
 
-import { AppContext } from 'modules/AppContext';
-import Cloudinary from 'components/Cloudinary';
+import AppContext from 'modules/AppContext';
+import Fluid from '../components/cloudinary/Fluid';
 
 const Home = () => (
   <HomeContainer>
@@ -22,9 +22,8 @@ const Home = () => (
           return (
             <div className="hello">
               <h1>Home</h1>
-              <Cloudinary
+              <Fluid
                 modifiers={competitionsHero}
-                fluid
                 source={`${process.env.REACT_APP_WORDPRESS_API}/wp-content/uploads/2018/08/TheWendtes-Mended.jpg`}
                 alt="&quot;The Wendtes&quot; written in sand on a beach"
                 className="home-image"

@@ -3,8 +3,8 @@ import EXIF from 'exif-js';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import { AppContext } from 'modules/AppContext';
-import Cloudinary from 'components/Cloudinary';
+import AppContext from 'modules/AppContext';
+import Fluid from 'components/cloudinary/Fluid';
 import Icon from 'components/Icon';
 import { prettifyDate } from 'utils/date';
 import colors from 'utils/colors';
@@ -88,10 +88,9 @@ class Photo extends Component {
                   </PictureInfo>
                   <PhotoWrapper>
                     <div className="picture-element">
-                      <Cloudinary
+                      <Fluid
                         className="picture"
                         modifiers={competitionsHero}
-                        fluid
                         keepMeta
                         source={pic.src}
                         alt={pic.alt}

@@ -13,6 +13,21 @@ const months = [
   'December',
 ];
 
+export const monthsToInt = {
+  January: 0,
+  February: 1,
+  March: 2,
+  April: 3,
+  May: 4,
+  June: 5,
+  July: 6,
+  August: 7,
+  September: 8,
+  October: 9,
+  November: 10,
+  December: 11,
+};
+
 export function prettifyDate({ date }) {
   const month = months[date.getMonth()];
   const numberDate = date.getDate().toString();
@@ -37,6 +52,20 @@ export function prettifyDate({ date }) {
   };
   const time = `${hourObject.hour}:${minutes(date)}${hourObject.abbr}`;
   const final = `${month} ${day}, ${year} at ${time}`;
+  return final;
+}
+
+export function monthAndDay({ date }) {
+  const month = months[date.getMonth()];
+  const numberDate = date.getDate().toString();
+  const abbr = d => {
+    if (d.slice(-1) === '1') return 'st';
+    else if (d.slice(-1) === '2') return 'nd';
+    else if (d.slice(-1) === '3') return 'rd';
+    return 'th';
+  };
+  const day = `${numberDate}${abbr(numberDate)}`;
+  const final = `${month} ${day}`;
   return final;
 }
 

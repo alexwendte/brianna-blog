@@ -8,7 +8,7 @@ import { convertToDateObject } from 'utils/date';
 
 const AppContext = React.createContext();
 
-class AppProvider extends Component {
+export class AppProvider extends Component {
   state = {
     // aboutInfo: null,
     pictures: null,
@@ -78,7 +78,7 @@ class AppProvider extends Component {
         const formattedPictures = pictures.map((pic, index) => {
           const rawTime = pic.media_details.image_meta.created_timestamp;
           const date = convertToDateObject({ raw: rawTime });
-          const returnObj = { src: pic.source_url, alt: pic.alt_text, date, photoIndex: index };
+          const returnObj = { src: pic.source_url, alt: pic.alt_text, date, photoIndex: index, post: pic.post };
           return returnObj;
         });
         this.setState({ pictures: formattedPictures });
@@ -97,4 +97,4 @@ AppProvider.propTypes = {
   children: PropTypes.object.isRequired,
 };
 
-export { AppContext, AppProvider };
+export default AppContext;

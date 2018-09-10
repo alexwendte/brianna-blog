@@ -8,6 +8,7 @@ import Posts from 'pages/posts/Posts';
 import Post from 'pages/posts/Post';
 import Photos from 'pages/photos/Photos';
 import Photo from 'pages/photos/Photo';
+import PhotoGallery from 'pages/photos/PhotoGallery';
 import Header from './Header';
 import Footer from './Footer';
 
@@ -22,6 +23,7 @@ const App = () => (
         <AboutUs path="about-us" />
         <Photos path="photos" />
         <Photo path="photos/:photoIndex" />
+        <PhotoGallery path="photos/posts/:postId" />
         <Posts path="posts" />
         <Post path="posts/:postSlug" />
       </Router>

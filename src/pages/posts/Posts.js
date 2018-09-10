@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Helmet } from 'react-helmet';
 
-import { AppContext } from 'modules/AppContext';
+import AppContext from 'modules/AppContext';
 import MonthPosts from './MonthPosts';
 
 const Posts = () => (

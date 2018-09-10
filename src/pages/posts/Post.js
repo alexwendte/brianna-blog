@@ -4,15 +4,15 @@ import PropTypes from 'prop-types';
 import { find } from 'lodash';
 import insane from 'insane';
 
-import { AppContext } from 'modules/AppContext';
-import Cloudinary from 'components/Cloudinary';
+import AppContext from 'modules/AppContext';
+import Fluid from 'components/cloudinary/Fluid';
 import Icon from 'components/Icon';
 import colors from 'utils/colors';
 
 // This is a page for a specific Post.
 class Post extends Component {
   render() {
-    const competitionsHero = { maxWidth: 0.4, height: 400 };
+    const postHeroImage = { maxWidth: 0.4, height: 400 };
     const { postSlug } = this.props;
 
     function handleBackClick() {
@@ -35,10 +35,9 @@ class Post extends Component {
                   <PostWrapper>
                     <div className="picture-element">
                       <h1>{post.title}</h1>
-                      <Cloudinary
+                      <Fluid
                         className="picture"
-                        modifiers={competitionsHero}
-                        fluid
+                        modifiers={postHeroImage}
                         keepMeta
                         source={pic.src}
                         alt={pic.alt}

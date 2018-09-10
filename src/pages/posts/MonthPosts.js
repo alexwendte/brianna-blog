@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-// import EXIF from 'exif-js';
 import styled from 'styled-components';
 import { Link } from '@reach/router';
 import PropTypes from 'prop-types';
 
-import Cloudinary from 'components/Cloudinary';
-import { transition, media, elevation } from 'utils/mixins';
+import Fixed from 'components/cloudinary/Fixed';
+import { transition, elevation } from 'utils/mixins';
 import colors from 'utils/colors';
 
 class MonthPosts extends Component {
@@ -26,7 +25,8 @@ class MonthPosts extends Component {
 
   render() {
     const { posts, month } = this.props;
-    const competitionsHero = { maxWidth: 0.2, height: 300 };
+
+    const postPicture = { width: 300, height: 300 };
 
     return (
       <Block>
@@ -38,14 +38,7 @@ class MonthPosts extends Component {
               filtered.push(
                 <Link to={post.slug} key={post.slug} className="picture-link">
                   <h4>{post.title}</h4>
-                  <Cloudinary
-                    className="picture"
-                    modifiers={competitionsHero}
-                    fluid
-                    keepMeta
-                    source={pic.src}
-                    alt={pic.alt}
-                  />
+                  <Fixed className="picture" modifiers={postPicture} fluid keepMeta source={pic.src} alt={pic.alt} />
                   <p>{post.excerpt}</p>
                 </Link>
               );

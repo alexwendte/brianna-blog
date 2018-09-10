@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import Helmet from 'react-helmet';
 
-import { AppContext } from 'modules/AppContext';
-import PhotoGallery from 'pages/photos/PhotoGallery';
+import AppContext from 'modules/AppContext';
+import PostPhotos from 'pages/photos/PostPhotos';
 
 class Photos extends Component {
   render() {
     return (
       <AppContext.Consumer>
         {({ state }) => {
-          if (state.pictures) {
+          if (state.posts && state.pictures) {
             return (
               <PhotosWrapper>
                 <Helmet
@@ -22,8 +22,9 @@ class Photos extends Component {
                 />
                 <h1 className="page-heading">Honeymoon Photos</h1>
                 <div className="photoGalleries">
-                  <PhotoGallery pictures={state.pictures} month="August" />
-                  <PhotoGallery pictures={state.pictures} month="July" />
+                  <PostPhotos posts={state.posts} pics={state.pictures} month="September" />
+                  <PostPhotos posts={state.posts} pics={state.pictures} month="August" />
+                  <PostPhotos posts={state.posts} pics={state.pictures} month="July" />
                 </div>
               </PhotosWrapper>
             );
