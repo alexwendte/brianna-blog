@@ -32,12 +32,15 @@
     "build-css": "stylus src/assets/stylus/index.styl -o src",
     "css": "npm run build-css && stylus -w src/assets/stylus/index.styl -o src",
     "build-js": "react-scripts build",
+    "preinstall": "npm i pm2",
+    "postinstall": "npm run build",
     "server": "nodemon server/server.js --watch",
     "start-js": "react-scripts start",
     "start": "concurrently \"npm:server\" \"npm:css\" \"npm:start-js\" ",
     "build": "npm run build-css && npm run build-js",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "production": "pm2-runtime server/server.js -i max"
   },
   "devDependencies": {
     "concurrently": "^3.6.1",
